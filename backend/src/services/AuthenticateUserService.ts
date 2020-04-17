@@ -2,6 +2,7 @@ import { getRepository } from 'typeorm';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 
+import authConfig from '../config/auth';
 import User from '../models/User';
 
 interface Request {
@@ -25,9 +26,11 @@ class AuthenticateUserService {
 
     if (!passwordMatched) throw new Error('Usuário não encontrado');
 
-    const token = sign({}, '1e761c13d4e0e19a2f675008ed812f47', {
+    const { secret, expiresIn } = authConfig.jwt;
+
+    const token = sign({}, secret, {
       subject: user.id,
-      expiresIn: '1d',
+      expiresIn,
     });
     return { user, token };
   }

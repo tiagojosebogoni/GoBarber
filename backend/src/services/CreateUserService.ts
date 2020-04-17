@@ -5,10 +5,11 @@ import User from '../models/User';
 interface Request {
   name: string;
   email: string;
+  password: string;
 }
 
 class CreateUserService {
-  public async execute({ name, email }: Request): Promise<User> {
+  public async execute({ name, email, password }: Request): Promise<User> {
     const userRepository = getCustomRepository(UsersRepository);
 
     const findUser = await userRepository.findEmail(email);
@@ -17,7 +18,7 @@ class CreateUserService {
       throw new Error('Email duplicado');
     }
 
-    const user = userRepository.create({ name, email });
+    const user = userRepository.create({ name, email, password });
 
     await userRepository.save(user);
 

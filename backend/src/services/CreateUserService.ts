@@ -1,6 +1,7 @@
 import { getCustomRepository } from 'typeorm';
 import { hash } from 'bcryptjs';
 
+import AppError from '../errors/AppError';
 import UsersRepository from '../repositories/UsersRepository';
 import User from '../models/User';
 
@@ -17,7 +18,7 @@ class CreateUserService {
     const findUser = await usersRepository.findEmail(email);
 
     if (findUser) {
-      throw new Error('Email duplicado');
+      throw new AppError('Email duplicado');
     }
 
     const hashPassword = await hash(password, 8);

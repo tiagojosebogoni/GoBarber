@@ -5,6 +5,7 @@ import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
 
 import { useAuth } from '../../context/AuthContext'
+import { useToast } from '../../context/ToastContext'
 import logoImg from '../../assets/logo.svg'
 import getValidationErros from '../../utils/getValidationErros'
 
@@ -20,6 +21,7 @@ interface SignInFormData {
 
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+  const { addToast } = useToast()
 
   const { user, signIn } = useAuth()
 
@@ -39,16 +41,23 @@ const SignIn: React.FC = () => {
           abortEarly: false,
         })
 
-        signIn({ email: data.email, password: data.password })
+        await signIn({ email: data.email, password: data.password })
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErros(err)
 
           formRef.current?.setErrors(errors)
         }
+
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description:
+            'Ocorreu um erro ao fazer login, verifique suas credenciais.',
+        })
       }
     },
-    [signIn],
+    [signIn, addToast],
   )
 
   return (

@@ -12,13 +12,14 @@ describe('UpdateUserAvatar', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
     fakeStorageProvider = new FakeStorageProvider();
+
     updateUserAvatar = new UpdateUserAvatarService(
       fakeUsersRepository,
       fakeStorageProvider,
     );
   });
 
-  it('should be able to update user avatar', async () => {
+  it('should be able to create a new user', async () => {
     const user = await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
@@ -61,8 +62,7 @@ describe('UpdateUserAvatar', () => {
       avatarFilename: 'avatar2.jpg',
     });
 
-    expect(deleteFile).toBeCalledWith('avatar.jpg');
-
+    expect(deleteFile).toHaveBeenCalledWith('avatar.jpg');
     expect(user.avatar).toBe('avatar2.jpg');
   });
 });

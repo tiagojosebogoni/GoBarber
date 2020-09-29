@@ -1,16 +1,14 @@
 import { injectable, inject } from 'tsyringe';
 import { isAfter, addHours } from 'date-fns';
-import AppError from '@shared/errors/AppError';
 
+import AppError from '@shared/errors/AppError';
 import IUsersRepository from '../repositories/IUsersRepository';
-import IUserTokenRepository from '../repositories/IUserTokenRepository';
+import IUserTokensRepository from '../repositories/IUserTokensRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
-// import User from '../infra/typeorm/entities/User';
-
 interface IRequest {
-  password: string;
   token: string;
+  password: string;
 }
 
 @injectable()
@@ -19,30 +17,31 @@ class ResetPasswordService {
     @inject('UsersRepository')
     private usersRepository: IUsersRepository,
 
-    @inject('UserTokenRepository')
-    private userTokenRepository: IUserTokenRepository,
+    @inject('UserTokensRepository')
+    private userTokensRepository: IUserTokensRepository,
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
   ) {}
 
-  public async execute({ password, token }: IRequest): Promise<void> {
-    const userToken = await this.userTokenRepository.findByToken(token);
+  public async execute({ token, password }: IRequest): Promise<void> {
+    const userToken = await this.userTokensRepository.findByToken(token);
 
     if (!userToken) {
-      throw new AppError('Usuário token não existe.');
+      throw new AppError('User token does not exists');
     }
 
     const user = await this.usersRepository.findById(userToken.user_id);
 
     if (!user) {
-      throw new AppError('Usuário não existe.');
+      throw new AppError('User does not exists');
     }
 
-    const compareDate = addHours(userToken.created_at, 2);
+    const tokenCreatedAt = userToken.created_at;
+    const compareDate = addHours(tokenCreatedAt, 2);
 
     if (isAfter(Date.now(), compareDate)) {
-      throw new AppError('token expirado.');
+      throw new AppError('Token expired.');
     }
 
     user.password = await this.hashProvider.generateHash(password);

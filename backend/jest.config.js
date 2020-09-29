@@ -1,5 +1,5 @@
-const {pathsToModuleNameMapper} = require('ts-jest/utils')
-const {compilerOptions} = require('./tsconfig.json')
+const { pathsToModuleNameMapper } = require('ts-jest/utils');
+const { compilerOptions } = require('./tsconfig.json')
 
 module.exports = {
   // All imported modules in your tests should be mocked automatically
@@ -8,8 +8,11 @@ module.exports = {
   // Stop running tests after `n` failures
   // bail: 0,
 
+  // Respect "browser" field in package.json when resolving modules
+  // browser: false,
+
   // The directory where Jest should store its cached dependency information
-  // cacheDirectory: "/tmp/jest_rs",
+  // cacheDirectory: "/private/var/folders/m7/3yjbp5ds77xb33vt96mwlwq00000gn/T/jest_dx",
 
   // Automatically clear mock calls and instances between every test
   clearMocks: true,
@@ -76,7 +79,7 @@ module.exports = {
   // ],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
-   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/src/' }),
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/src/' }),
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -88,7 +91,7 @@ module.exports = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-   preset: "ts-jest",
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -138,9 +141,9 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-   testMatch: [
-     "**/*.spec.ts"
-   ],
+  testMatch: [
+    "**/*.spec.ts"
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [

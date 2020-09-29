@@ -1,7 +1,7 @@
 import AppError from '@shared/errors/AppError';
 
 import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository';
-import FakeUserTokensRepository from '../repositories/fakes/FakeUserTokenRepository';
+import FakeUserTokensRepository from '../repositories/fakes/FakeUserTokensRepository';
 import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider';
 import ResetPasswordService from './ResetPasswordService';
 
@@ -34,11 +34,14 @@ describe('ResetPasswordService', () => {
 
     const generateHash = jest.spyOn(fakeHashProvider, 'generateHash');
 
-    await resetPassword.execute({ token, password: '123123' });
+    await resetPassword.execute({
+      password: '123123',
+      token,
+    });
 
     const updatedUser = await fakeUsersRepository.findById(user.id);
 
-    expect(generateHash).toBeCalledWith('123123');
+    expect(generateHash).toHaveBeenCalledWith('123123');
     expect(updatedUser?.password).toBe('123123');
   });
 
@@ -64,7 +67,7 @@ describe('ResetPasswordService', () => {
     ).rejects.toBeInstanceOf(AppError);
   });
 
-  it('should not be able to reset the password if passed more than 2 hours', async () => {
+  it('should not be able to reset password if passed more than 2 hours', async () => {
     const user = await fakeUsersRepository.create({
       name: 'John Doe',
       email: 'johndoe@example.com',
@@ -80,7 +83,10 @@ describe('ResetPasswordService', () => {
     });
 
     await expect(
-      resetPassword.execute({ token, password: '123123' }),
+      resetPassword.execute({
+        password: '123123',
+        token,
+      }),
     ).rejects.toBeInstanceOf(AppError);
   });
 });

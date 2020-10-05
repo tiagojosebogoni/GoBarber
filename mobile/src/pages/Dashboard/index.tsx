@@ -1,8 +1,20 @@
-import React from 'react'
-import { View } from 'react-native'
+import React from 'react';
 
-const Dashboar: React.FC = () => {
-  return <View />
-}
+import {
+  Container, Header, HeaderTitle, UserName,
+} from './styles';
 
-export default Dashboar
+const Dashboard:React.FC = () => (
+  <Container>
+    <Header>
+      <HeaderTitle>
+        Bem Vindo,
+        {' '}
+        {'\n'}
+        <UserName>Tiago Bogoni</UserName>
+      </HeaderTitle>
+    </Header>
+  </Container>
+);
+
+export default Dashboard;
